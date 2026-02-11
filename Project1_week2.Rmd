@@ -1,0 +1,180 @@
+---
+title: "MA214 Applied Statistics - Project 1 Week 2"
+author: "Your Section and Group"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+
+```
+
+## Project 1 week2 worksheet
+
+------------------------------------------------------------------------
+
+### 1: Importing and Inspecting the Data
+
+**Objective:** Load your dataset and understand its structure.
+
+Things to consider:
+
+-   What variables are available? Are there enough predictors for modeling?
+
+-   What are their data types?
+
+-   Are there missing values?
+
+-   Do any variables need cleaning or recoding?
+
+```{r, echo=TRUE}
+library(ggplot2)
+library(dplyr)
+library(readr)
+library(tidyr)
+library(openintro)
+data(evals)
+# Import the data
+# Example: data <- read.csv("your_dataset.csv")
+# Example: data <- read.csv("URL_to_dataset.csv")
+
+df<-evals
+
+
+# View the first few rows
+head(df)
+
+# Check variable types and structure
+str(df)
+
+# Check for missing values
+summary(df)
+
+```
+
+Group Discussion: Note any variables that need recoding or cleaning.
+
+### 2. Data Transformation
+
+**Objective:** Prepare your data for analysis by performing necessary transformations.
+
+Consider:
+
+-   Do variables need unit changes or standardization?
+
+-   Would a log or other transformation improve visualization or interpretation?
+
+-   Do you need to create new variables for analysis?
+
+```{r, echo=TRUE}
+# Perform any necessary transformations here
+hist(df$cls_students)
+hist(df$score)
+hist(df$bty_avg)
+hist(log((df$score)))
+# Create new variables if needed
+```
+
+Group Discussion: Explain why each transformation was applied.
+
+### 3. Data Summarization
+
+**Objective:** Summarize your dataset to understand patterns and distributions.
+
+Tasks:
+
+-   Produce overall summaries using table, statistics
+
+-   Produce grouped summaries if applicable (e.g., by category)
+
+-   Produce meaningful summaries by plots
+
+```{r, echo=TRUE}
+# Overall summary
+summary(df)
+
+# Grouped summary example
+df %>% group_by(ethnicity) %>% summarise(mean_value = mean(bty_avg, na.rm = TRUE))
+df %>% group_by(gender) %>% summarise(mean_value = mean(bty_avg, na.rm = TRUE))
+
+# Visual summary example
+ggplot(df, aes(x=bty_avg)) + geom_histogram(binwidth=1)
+
+numeric_vars <- df %>%
+  select(score, bty_avg, age, cls_students, cls_perc_eval)
+
+pairs(numeric_vars)
+
+```
+
+Group Discussion: Comment on interesting patterns observed in summaries and plots.
+
+### 4. Assumption Checking
+
+**Objective:** Evaluate key modeling assumptions using visualizations and summary statistics.
+
+Check for:
+
+-   Linearity
+
+-   Normality
+
+-   Independence
+
+Tools: Histograms, boxplots, scatterplots
+
+```{r, echo=TRUE}
+# Check linearity and relationships
+plot(df$bty_avg, df$score)+ geom_point()
+
+# Histograms and boxplots
+ggplot(df, aes(x=bty_avg)) + geom_histogram(binwidth=1)
+ggplot(df, aes(y=bty_avg, x=gender)) + geom_boxplot()
+ggplot(df, aes(y=bty_avg, x=ethnicity)) + geom_boxplot()
+
+# Normality check
+# qqnorm(data$Var)
+# qqline(data$Var)
+```
+
+Group Discussion: Comment on whether assumptions are met and any potential issues.
+
+### 5. Exploring Relationships Between Variables
+
+Objective: Investigate associations and patterns between variables.
+
+Questions:
+
+Which variables appear associated?
+
+Are relationships linear or nonlinear?
+
+Are there outliers or unusual patterns?
+
+```{r, echo=TRUE}
+# Scatterplots or other visualizations
+ggplot(df, aes(x=cls_students, y=bty_avg)) + geom_point()
+
+# Correlation or other relationship measures
+# cor(data$Var1, data$Var2, use="complete.obs")
+```
+
+Group Discussion: Summarize the key relationships and any patterns found.
+
+------------------------------------------------------------------------
+
+Submit this document at the end of today’s lab. If you downloaded any CSV files, please include them with your submission. **Each group should submit one set of files (Rmd, PDF, and any CSV files) to Blackboard.**
+
+**To convert this R Markdown document to PDF:** In RStudio, click the **Knit** button at the top of the editor and select **Knit to PDF**. Make sure you have LaTeX installed (e.g., TinyTeX) to enable PDF generation.
+
+| Name | BUID | Present/Absent |
+|------|------|----------------|
+|      |      |                |
+|      |      |                |
+|      |      |                |
+|      |      |                |
+|      |      |                |
