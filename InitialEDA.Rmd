@@ -1,0 +1,107 @@
+---
+title: "Initial EDA"
+output: html_document
+date: "2026-02-12"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+library(readr)
+library(tidyr)
+library(openintro)
+```
+
+```         
+{r, echo=TRUE}
+```
+
+```         
+```
+
+```{r}
+data(evals)
+df<-evals
+head(df)
+```
+
+```{r, echo=TRUE}
+summary(df)
+df %>% group_by(ethnicity) %>% summarise(mean_value = mean(bty_avg, na.rm = TRUE))
+df %>% group_by(gender) %>% summarise(mean_value = mean(bty_avg, na.rm = TRUE))
+```
+
+```{r, echo=TRUE}
+plot(df$bty_avg, df$score)+
+  geom_point()
+ggplot(df, aes(x=bty_avg)) + geom_histogram(binwidth=1)
+ggplot(df, aes(y=bty_avg, x=gender)) + geom_boxplot()
+ggplot(df, aes(y=bty_avg, x=ethnicity)) + geom_boxplot()
+
+
+ggplot(df, aes(x=score)) + geom_histogram(binwidth=1)
+ggplot(df, aes(y=score, x=gender)) + geom_boxplot()
+ggplot(df, aes(y=score, x=ethnicity)) + geom_boxplot()
+
+```
+
+```{r, echo=TRUE}
+# Normality check
+qqnorm(df$score)
+qqline(df$score)
+?evals
+```
+
+```{r}
+summary(df$bty_avg)
+```
+
+```{r}
+ggplot(df, aes(x = rank, y = score)) +
+  geom_boxplot()
+```
+
+```{r}
+ggplot(df, aes(x = cls_students, y = score)) +
+  geom_point(alpha = 0.4) +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+```{r}
+ggplot(df, aes(x = age, y = score)) +
+  geom_point(alpha = 0.4) +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+```{r}
+cor(df$age,df$score)
+cor(df$age, df$bty_avg)
+
+#age is a confounding variable 
+```
+
+```{r}
+df |>
+  select(score, bty_avg, age, cls_students, cls_perc_eval) |>
+  pairs()
+```
+
+```{r}
+ggplot(df, aes(x=cls_perc_eval, y=score))+
+  geom_point()
+cor(df$cls_perc_eval, df$score)
+cor(df$cls_perc_eval, df$bty_avg)
+```
+
+```{r}
+mod1 <- lm(score ~ bty_avg, data = df)
+mod2 <- lm(score ~ bty_avg + cls_perc_eval, data = df)
+
+summary(mod1)
+summary(mod2)
+```
+
+```{r}
+
+```
