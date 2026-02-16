@@ -13,8 +13,7 @@ library(tidyr)
 library(openintro)
 ```
 
-```         
-{r, echo=TRUE}
+```{r, echo=TRUE}
 ```
 
 ```         
