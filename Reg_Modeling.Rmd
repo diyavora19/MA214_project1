@@ -1,0 +1,72 @@
+---
+title: "Reg_Modeling"
+author: "Kyle Yang"
+date: "2026-02-16"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+library(readr)
+library(tidyr)
+library(openintro)
+```
+
+```{r}
+data(evals)
+df <- evals
+# glimpse(df)
+head(df)
+```
+
+```{r}
+# Create a regression model for Professor Evaluation Score based on Beauty Average
+bty_on_score <- lm(score ~ bty_avg, data = df)
+model_sum <- summary(bty_on_score)
+model_aug <- augment(bty_on_score)
+
+df |>
+  ggplot(aes(x = bty_avg, y = score)) + 
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) + 
+  labs(x = "Beauty Average Rating",
+       y = "Professor Evaluation Score",
+       title = "Average Beauty vs. Professor Evaluation") + 
+  theme_bw() +
+  theme(
+    panel.grid.major.y = element_blank(),
+    # panel.grid.major.x = element_blank(),
+    plot.title = element_text(face = "bold")
+  )
+```
+
+```{r}
+# Create a multiple regression model for Average Beauty Score based on Age, Ethnicity, and Gender
+df <- df |>
+  mutate(ethnicity = factor(ethnicity, levels = c("not minority", "minority")))
+
+multi_bty <- lm(bty_avg ~ age + ethnicity + gender, data = df)
+multi_sum <- summary(multi_bty)
+multi_aug <- augment(multi_bty)
+multi_sum
+
+df |>
+  ggplot(aes(x = age, y = bty_avg, color = ethnicity)) + 
+  facet_wrap(~ gender) +
+  geom_point(size = 2) +
+  geom_smooth(method = "lm", se = FALSE, fullrange = TRUE) + 
+  labs(x = "Age",
+       y = "Average Beauty Rating",
+       title = "Downward Linear Relationship Betw. Beauty, Gender, Ethnicity, and Age",
+       color = "Ethnicity") + 
+  theme_bw() +
+  theme(plot.title = element_text(face = "bold"),
+        legend.background = element_rect(fill = "#F2F2F2"),
+        legend.box.background = element_rect(color = "black", linewidth = 2)) +
+  scale_color_manual(values = c("not minority" = "#D55E00", "minority" = "#0072B2")) +
+  scale_fill_discrete(name = "Ethnicity", labels = c("Not Minority", "Minority"))
+```
+
+\
